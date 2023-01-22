@@ -26,7 +26,7 @@ export default class Init {
    *Run application on port 8080
    */
   public listen() {
-    this.app.listen(8080, () => {
+    this.app.listen(process.env.PORT || 8080, () => {
       console.log(`Connected to 8080`);
     });
   }

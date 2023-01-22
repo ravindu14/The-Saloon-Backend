@@ -6,3 +6,8 @@ export class DataMissingException extends HttpException {
   }
 }
 
+export class AuthenticationErrorException extends HttpException {
+  constructor() {
+    super(400, `Incorrect Username or Password`, false);
+  }
+}
