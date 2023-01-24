@@ -1,6 +1,6 @@
 {
   "name": "projectbackend",
-  "version": "1.0.0",  
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -16,16 +16,20 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.0-rc.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.6",
     "mongoose-unique-validator": "^2.0.3",
     "reflect-metadata": "^0.1.13",
     "ts-mongoose": "^0.0.24",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/jest": "^26.0.23",
+    "@types/jsonwebtoken": "^9.0.1",
     "jest": "^27.0.4",
     "ts-jest": "^27.0.3"
   }

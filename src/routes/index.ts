@@ -7,7 +7,9 @@ export const initRoutes = () => {
   // Auth
   const path = "/auth";
   const authController = createAuthController();
-  router.put(`${path}`, authController.createOrUpdateUser);
+
+  router.post(`${path}/signup`, authController.createOrUpdateUser);
+  router.post(`${path}/login`, authController.login);
 
   return router;
 };

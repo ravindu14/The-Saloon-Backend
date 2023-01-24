@@ -1,19 +1,23 @@
 import { Request, Response, NextFunction, Router } from "express";
+import { hashSync, genSaltSync } from "bcryptjs";
 
 import Controller from "../../shared/interfaces/controller.interface";
+import { InternalServerError } from "../../shared/exceptions/request.exception";
 import {
-  InternalServerError,
-  InvalidRequestException,
-} from "../../shared/exceptions/request.exception";
-import { DataMissingException } from "../../exceptions/auth.exception";
+  AuthenticationErrorException,
+  DataMissingException,
+} from "../../exceptions/auth.exception";
 import { AuthService } from "../../services/auth/authService";
-import { UserDto } from "../../dto/auth/authDto";
+import { UserCredentials, UserDto } from "../../dto/auth/authDto";
 import { plainToClass } from "class-transformer";
+import { SessionService } from "../../services/session/sessionService";
 
 export class AuthController implements Controller {
   private authService;
-  constructor(authService: AuthService) {
+  private sessionService;
+  constructor(authService: AuthService, sessionService: SessionService) {
     this.authService = authService;
+    this.sessionService = sessionService;
   }
 
   /**
@@ -29,15 +33,22 @@ export class AuthController implements Controller {
     next: NextFunction
   ) => {
     try {
-      const userDto: UserDto = plainToClass(UserDto, request.body, {
-        enableImplicitConversion: true,
-      });
+      const userDto: UserDto = plainToClass(UserDto, request.body);
 
       if (!userDto.userId) {
         return next(new DataMissingException());
       }
 
-      const data = await this.authService.createUser(userDto);
+      const salt = genSaltSync(10);
+      const hashPassword = hashSync(userDto.password, salt);
+
+      const newUser = {
+        ...userDto,
+        password: hashPassword,
+      };
+
+      const data = await this.authService.createUser(newUser);
+
       if (!data) {
         return response.status(400).json({ success: false });
       }
@@ -46,8 +57,45 @@ export class AuthController implements Controller {
       return next(new InternalServerError());
     }
   };
+
+  /**
+   * Login function to authenticate users (All roles)
+   * @param request
+   * @param response
+   * @param next
+   * @returns
+   */
+  public login = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userCredentials: UserCredentials = plainToClass(
+        UserCredentials,
+        request.body
+      );
+
+      const user: UserDto = await this.authService.authenticateUser(
+        userCredentials
+      );
+
+      if (!user) {
+        return next(new AuthenticationErrorException());
+      }
+
+      const { token } = await this.sessionService.createSession(user);
+
+      if (!token) {
+        return response.status(400).json({ success: false });
+      }
+      return response.status(200).json({ success: true, data: { token } });
+    } catch (error) {
+      return next(new InternalServerError());
+    }
+  };
 }
 
 export const createAuthController = (): AuthController => {
-  return new AuthController(new AuthService());
+  return new AuthController(new AuthService(), new SessionService());
 };
