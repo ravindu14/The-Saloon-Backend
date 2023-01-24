@@ -57,8 +57,31 @@ export class AuthManagerRepository {
       email: currentUser.email,
       contact: currentUser.contact,
       userRole: currentUser.userRole,
+      status: currentUser.status,
+      userName: currentUser.userName,
     };
 
     return curretUserProfile;
+  };
+
+  public updateUserProfile = async (userId: String, user: CurrentUser) => {
+    const updatedUser = await this.model.findOneAndUpdate(
+      { userId },
+      { $set: user },
+      { new: true }
+    );
+
+    const updatedUserProfile: CurrentUser = {
+      userId: updatedUser.userId,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      contact: updatedUser.contact,
+      userRole: updatedUser.userRole,
+      status: updatedUser.status,
+      userName: updatedUser.userName,
+    };
+
+    return updatedUserProfile;
   };
 }

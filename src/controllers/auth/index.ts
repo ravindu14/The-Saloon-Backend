@@ -96,7 +96,8 @@ export class AuthController implements Controller {
   };
 
   /**
-   * Login function to authenticate users (All roles)
+   * get User profile after the authentication process.
+   * This data will be used to display in the profile section and dashboards
    * @param request
    * @param response
    * @param next
@@ -116,6 +117,39 @@ export class AuthController implements Controller {
 
       const currentUser: CurrentUser =
         await this.authService.getCurrentUserProfile(request.user);
+
+      return response.status(200).json({ success: true, data: currentUser });
+    } catch (error) {
+      return next(new InternalServerError());
+    }
+  };
+
+  /**
+   * Update user profile function. The basic details of a any
+   * user role can be changed using this function
+   * @param request
+   * @param response
+   * @param next
+   * @returns
+   */
+  public updateUserProfile = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      if (!request.user) {
+        return response
+          .status(400)
+          .json({ success: false, message: "Unauthorized user" });
+      }
+
+      const updatedUser = request.body;
+
+      const currentUser: CurrentUser = await this.authService.updateUserProfile(
+        request.user,
+        updatedUser
+      );
 
       return response.status(200).json({ success: true, data: currentUser });
     } catch (error) {

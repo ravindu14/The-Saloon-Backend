@@ -23,4 +23,11 @@ export class AuthService {
   ): Promise<CurrentUser> => {
     return await this.authRepo.getCurrentUserProfile(userId);
   };
+
+  public updateUserProfile = async (
+    userId: string,
+    user: CurrentUser
+  ): Promise<CurrentUser> => {
+    return await this.authRepo.updateUserProfile(userId, user);
+  };
 }
