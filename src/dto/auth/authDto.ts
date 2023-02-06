@@ -67,3 +67,30 @@ export class UserCredentials {
   @IsString()
   public password: string;
 }
+
+export class CurrentUser {
+  @Expose()
+  @IsString()
+  public userId: string;
+
+  @Expose()
+  @IsString()
+  public firstName: string;
+
+  @Expose()
+  @IsString()
+  public lastName: string;
+
+  @Expose()
+  @IsEmail()
+  public email: string;
+
+  @Expose()
+  @IsString()
+  public contact: string;
+
+  @Expose()
+  @IsEnum(UserRoleEnum)
+  @IsNotEmpty()
+  public userRole: string;
+}
