@@ -1,5 +1,5 @@
 import { AuthManagerRepository } from "../../dal/auth/authManagerRepository";
-import { UserCredentials, UserDto } from "../../dto/auth/authDto";
+import { CurrentUser, UserCredentials, UserDto } from "../../dto/auth/authDto";
 
 export class AuthService {
   private authRepo: AuthManagerRepository;
@@ -16,5 +16,18 @@ export class AuthService {
     credentials: UserCredentials
   ): Promise<any> => {
     return await this.authRepo.authenticateUser(credentials);
+  };
+
+  public getCurrentUserProfile = async (
+    userId: string
+  ): Promise<CurrentUser> => {
+    return await this.authRepo.getCurrentUserProfile(userId);
+  };
+
+  public updateUserProfile = async (
+    userId: string,
+    user: CurrentUser
+  ): Promise<CurrentUser> => {
+    return await this.authRepo.updateUserProfile(userId, user);
   };
 }

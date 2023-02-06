@@ -55,7 +55,7 @@ export class UserDto {
 
   @Expose()
   @IsEnum(UserStatus)
-  public status: boolean;
+  public status: string;
 }
 
 export class UserCredentials {
@@ -66,4 +66,39 @@ export class UserCredentials {
   @Expose()
   @IsString()
   public password: string;
+}
+
+export class CurrentUser {
+  @Expose()
+  @IsString()
+  public userId: string;
+
+  @Expose()
+  @IsString()
+  public firstName: string;
+
+  @Expose()
+  @IsString()
+  public lastName: string;
+
+  @Expose()
+  @IsString()
+  public userName: string;
+
+  @Expose()
+  @IsEmail()
+  public email: string;
+
+  @Expose()
+  @IsString()
+  public contact: string;
+
+  @Expose()
+  @IsEnum(UserRoleEnum)
+  @IsNotEmpty()
+  public userRole: string;
+
+  @Expose()
+  @IsEnum(UserStatus)
+  public status: string;
 }

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createAuthController } from "../controllers/auth";
+import authMiddleware from "../shared/middlewares/auth.middleware";
 
 export const initRoutes = () => {
   const router = new Router();
@@ -10,6 +11,16 @@ export const initRoutes = () => {
 
   router.post(`${path}/signup`, authController.createOrUpdateUser);
   router.post(`${path}/login`, authController.login);
+  router.get(
+    `${path}/user-profile`,
+    authMiddleware,
+    authController.getUserProfile
+  );
+  router.put(
+    `${path}/user-profile`,
+    authMiddleware,
+    authController.updateUserProfile
+  );
 
   return router;
 };
