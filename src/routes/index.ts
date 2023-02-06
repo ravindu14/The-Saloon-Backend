@@ -16,6 +16,11 @@ export const initRoutes = () => {
     authMiddleware,
     authController.getUserProfile
   );
+  router.put(
+    `${path}/user-profile`,
+    authMiddleware,
+    authController.updateUserProfile
+  );
 
   return router;
 };
