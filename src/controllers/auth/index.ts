@@ -126,7 +126,7 @@ export class AuthController implements Controller {
 
   /**
    * Update user profile function. The basic details of a any
-   * user role can be changed using this function
+   * user role can be changed using this function.
    * @param request
    * @param response
    * @param next
