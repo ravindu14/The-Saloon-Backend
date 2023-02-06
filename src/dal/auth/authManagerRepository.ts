@@ -1,4 +1,4 @@
-import { UserCredentials, UserDto } from "../../dto/auth/authDto";
+import { CurrentUser, UserCredentials, UserDto } from "../../dto/auth/authDto";
 import AuthSchema from "./model";
 import { compare } from "bcryptjs";
 
@@ -43,5 +43,22 @@ export class AuthManagerRepository {
       return isPasswordMatching ? userToBeAuthenticated : null;
     }
     return null;
+  };
+
+  public getCurrentUserProfile = async (userId: String) => {
+    const currentUser: UserDto = await this.model.findOne({
+      userId,
+    });
+
+    const curretUserProfile: CurrentUser = {
+      userId: currentUser.userId,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      email: currentUser.email,
+      contact: currentUser.contact,
+      userRole: currentUser.userRole,
+    };
+
+    return curretUserProfile;
   };
 }

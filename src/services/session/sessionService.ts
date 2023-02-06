@@ -29,4 +29,8 @@ export class SessionService {
 
     return await this.sessionRepo.createSession(dataForToken);
   };
+
+  public findSession = async (token: String): Promise<any> => {
+    return await this.sessionRepo.getSessionByKey(token);
+  };
 }

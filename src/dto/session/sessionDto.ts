@@ -22,3 +22,17 @@ export class CreateSessionDto {
   @IsString()
   public role: string;
 }
+
+export class SessionDto {
+  @Expose()
+  @IsString()
+  public id: string;
+
+  @Expose()
+  @IsString()
+  public userId: string;
+
+  @Expose()
+  @IsString()
+  public role: string;
+}

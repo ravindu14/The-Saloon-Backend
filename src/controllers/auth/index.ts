@@ -8,7 +8,7 @@ import {
   DataMissingException,
 } from "../../exceptions/auth.exception";
 import { AuthService } from "../../services/auth/authService";
-import { UserCredentials, UserDto } from "../../dto/auth/authDto";
+import { CurrentUser, UserCredentials, UserDto } from "../../dto/auth/authDto";
 import { plainToClass } from "class-transformer";
 import { SessionService } from "../../services/session/sessionService";
 
@@ -90,6 +90,34 @@ export class AuthController implements Controller {
         return response.status(400).json({ success: false });
       }
       return response.status(200).json({ success: true, data: { token } });
+    } catch (error) {
+      return next(new InternalServerError());
+    }
+  };
+
+  /**
+   * Login function to authenticate users (All roles)
+   * @param request
+   * @param response
+   * @param next
+   * @returns
+   */
+  public getUserProfile = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      if (!request.user) {
+        return response
+          .status(400)
+          .json({ success: false, message: "Unauthorized user" });
+      }
+
+      const currentUser: CurrentUser =
+        await this.authService.getCurrentUserProfile(request.user);
+
+      return response.status(200).json({ success: true, data: currentUser });
     } catch (error) {
       return next(new InternalServerError());
     }
