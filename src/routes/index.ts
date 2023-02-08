@@ -1,25 +1,42 @@
 import { Router } from "express";
 import { createAuthController } from "../controllers/auth";
+import { createMerchantController } from "../controllers/merchant";
 import authMiddleware from "../shared/middlewares/auth.middleware";
 
 export const initRoutes = () => {
   const router = new Router();
 
   // Auth
-  const path = "/auth";
+  const userPath = "/auth";
   const authController = createAuthController();
 
-  router.post(`${path}/signup`, authController.createOrUpdateUser);
-  router.post(`${path}/login`, authController.login);
+  router.post(`${userPath}/signup`, authController.createOrUpdateUser);
+  router.post(`${userPath}/login`, authController.login);
   router.get(
-    `${path}/user-profile`,
+    `${userPath}/user-profile`,
     authMiddleware,
     authController.getUserProfile
   );
   router.put(
-    `${path}/user-profile`,
+    `${userPath}/user-profile`,
     authMiddleware,
     authController.updateUserProfile
+  );
+  
+
+  // Merchant
+  const merchantPath = "/merchant";
+  const merchantController = createMerchantController();
+
+  router.post(
+    `${merchantPath}/services`,
+    authMiddleware,
+    merchantController.createService
+  );
+  router.get(
+    `${merchantPath}/services`,
+    authMiddleware,
+    merchantController.getAllServices
   );
 
   return router;
