@@ -22,7 +22,6 @@ export const initRoutes = () => {
     authMiddleware,
     authController.updateUserProfile
   );
-  
 
   // Merchant
   const merchantPath = "/merchant";
@@ -38,6 +37,17 @@ export const initRoutes = () => {
     authMiddleware,
     merchantController.getAllServices
   );
+  router.get(
+    `${merchantPath}/profile`,
+    authMiddleware,
+    merchantController.getMerchantProfile
+  );
+  router.put(
+    `${merchantPath}/profile`,
+    authMiddleware,
+    merchantController.updateMerchantProfile
+  );
 
+  //agenda routes
   return router;
 };

@@ -11,13 +11,23 @@ import { AuthService } from "../../services/auth/authService";
 import { CurrentUser, UserCredentials, UserDto } from "../../dto/auth/authDto";
 import { plainToClass } from "class-transformer";
 import { SessionService } from "../../services/session/sessionService";
+import { MerchantService } from "../../services/merchant/merchantService";
+import { UserRoleEnum } from "../../dto/user/userDto";
+import { MerchantProfileDto } from "../../dto/merchant/merchantDto";
 
 export class AuthController implements Controller {
   private authService;
   private sessionService;
-  constructor(authService: AuthService, sessionService: SessionService) {
+  private merchantService;
+
+  constructor(
+    authService: AuthService,
+    sessionService: SessionService,
+    merchantService: MerchantService
+  ) {
     this.authService = authService;
     this.sessionService = sessionService;
+    this.merchantService = merchantService;
   }
 
   /**
@@ -47,11 +57,29 @@ export class AuthController implements Controller {
         password: hashPassword,
       };
 
-      const data = await this.authService.createUser(newUser);
+      const data: UserDto = await this.authService.createUser(newUser);
 
       if (!data) {
         return response.status(400).json({ success: false });
       }
+
+      if (data.userRole === UserRoleEnum.merchant) {
+        let newMerchant: MerchantProfileDto = {
+          userId: data.userId,
+          businessName: `${data.firstName} ${data.lastName}`,
+          address: "",
+          contact: data.contact,
+          openTime: "8",
+          closeTime: "18",
+          bannerImage: "",
+          description: "",
+          latitude: "",
+          longitude: "",
+        };
+
+        await this.merchantService.createMerchantProfile(newMerchant);
+      }
+
       return response.status(200).json({ success: true, data });
     } catch (error) {
       return next(new InternalServerError());
@@ -159,5 +187,9 @@ export class AuthController implements Controller {
 }
 
 export const createAuthController = (): AuthController => {
-  return new AuthController(new AuthService(), new SessionService());
+  return new AuthController(
+    new AuthService(),
+    new SessionService(),
+    new MerchantService()
+  );
 };
