@@ -49,5 +49,6 @@ export const initRoutes = () => {
   );
 
   //agenda routes
+  //admin routes
   return router;
 };
