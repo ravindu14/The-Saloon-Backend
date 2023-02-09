@@ -4,7 +4,10 @@ import Controller from "../../shared/interfaces/controller.interface";
 import { InternalServerError } from "../../shared/exceptions/request.exception";
 import { MerchantService } from "../../services/merchant/merchantService";
 import { plainToClass } from "class-transformer";
-import { CreateServiceDto } from "../../dto/merchant/merchantDto";
+import {
+  CreateServiceDto,
+  MerchantProfileDto,
+} from "../../dto/merchant/merchantDto";
 
 export class MerchantController implements Controller {
   private merchantService;
@@ -78,6 +81,53 @@ export class MerchantController implements Controller {
       );
 
       return response.status(200).json({ success: true, data: services });
+    } catch (error) {
+      return next(new InternalServerError());
+    }
+  };
+
+  public getMerchantProfile = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      if (!request.user) {
+        return response
+          .status(400)
+          .json({ success: false, message: "Unauthorized user" });
+      }
+
+      const profile: MerchantProfileDto =
+        await this.merchantService.getMerchantProfileById(request.user);
+
+      return response.status(200).json({ success: true, data: profile });
+    } catch (error) {
+      return next(new InternalServerError());
+    }
+  };
+
+  public updateMerchantProfile = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      if (!request.user) {
+        return response
+          .status(400)
+          .json({ success: false, message: "Unauthorized user" });
+      }
+
+      const updatedProfile = request.body;
+
+      const profile: MerchantProfileDto =
+        await this.merchantService.updateMerchantProfile(
+          request.user,
+          updatedProfile
+        );
+
+      return response.status(200).json({ success: true, data: profile });
     } catch (error) {
       return next(new InternalServerError());
     }
