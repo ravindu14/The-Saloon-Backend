@@ -132,6 +132,29 @@ export class MerchantController implements Controller {
       return next(new InternalServerError());
     }
   };
+
+  public getMerchantProfilesByName = async (
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
+    try {
+      if (!request.user) {
+        return response
+          .status(400)
+          .json({ success: false, message: "Unauthorized user" });
+      }
+
+      const { keyword } = request.body;
+
+      const profiles: MerchantProfileDto[] =
+        await this.merchantService.getProfileByMerchantName(keyword);
+
+      return response.status(200).json({ success: true, data: profiles });
+    } catch (error) {
+      return next(new InternalServerError());
+    }
+  };
 }
 
 export const createMerchantController = (): MerchantController => {

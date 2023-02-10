@@ -41,4 +41,8 @@ export class ProfileManagerRepository {
 
     return newProfile;
   };
+
+  public getProfileByMerchantName = async (keyword: String) => {
+    return await this.model.find({ businessName: { $regex: keyword } });
+  };
 }

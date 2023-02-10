@@ -48,6 +48,12 @@ export const initRoutes = () => {
     merchantController.updateMerchantProfile
   );
 
+  router.put(
+    `${merchantPath}/profiles`,
+    authMiddleware,
+    merchantController.getMerchantProfilesByName
+  );
+
   //agenda routes
   return router;
 };
