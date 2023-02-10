@@ -40,4 +40,10 @@ export class MerchantService {
   ): Promise<MerchantProfileDto> => {
     return await this.profileRepo.updateMerchantProfile(userId, profile);
   };
+
+  public getProfileByMerchantName = async (
+    keyword: String
+  ): Promise<Array<MerchantProfileDto>> => {
+    return await this.profileRepo.getProfileByMerchantName(keyword);
+  };
 }
